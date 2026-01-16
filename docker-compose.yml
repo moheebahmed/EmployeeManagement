@@ -1,0 +1,28 @@
+services:
+  # Node.js backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3090:3090"  # Expose port 3090
+    env_file:
+      - ./.env  # Docker Compose will automatically use the variables in .env file
+    depends_on:
+      - mysql  # Ensure MySQL starts before the backend
+
+  # MySQL database
+  mysql:
+    image: mysql:8.0 
+    container_name: employee_management_backend_mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: "root123"
+      MYSQL_PASSWORD: "root123"
+      MYSQL_DATABASE: "employee-management-db"
+    ports:
+      - 3306:3306  # Expose MySQL port (use 3307 on host to avoid conflict)
+    volumes:
+      - employee_management_data:/var/lib/mysql  # Persistent data storage for MySQL
+
+volumes:
+  employee_management_data:  # Declare a volume for MySQL data persistence
